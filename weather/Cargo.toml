@@ -1,0 +1,31 @@
+[package]
+name = "weather"
+version = "0.1.0"
+authors = ["Lawrence Feng <spnether1411@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4.41"
+dioxus = { version = "0.6.0", features = ["router", "fullstack"] }
+reqwest = { version = "0.12.23", features = ["json"] }
+serde = "1.0.219"
+
+[features]
+default = ["web"]
+web = ["dioxus/web"]
+desktop = ["dioxus/desktop"]
+mobile = ["dioxus/mobile"]
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
