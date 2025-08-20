@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::components::{blog::Blog,home::Home};
+use crate::components::home::Home;
 use crate::components::navbar::Navbar;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
@@ -9,6 +9,6 @@ pub enum Route {
     #[layout(Navbar)]
     #[route("/")]
     Home {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
+    // #[route("/blog/:id")]
+    // Blog { id: i32 },
 }

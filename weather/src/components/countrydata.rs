@@ -5,7 +5,7 @@ use crate::models::weather::{WeatherLocation, WeatherResponse};
 
 #[allow(non_snake_case)]
 #[component]
-pub fn CountryData(weather: WeatherResponse, country: WeatherLocation) -> Element {
+pub fn CountryData(weather: WeatherResponse, country: Signal<WeatherLocation>) -> Element {
     let today = Utc::now().format("%y/%m/%d");
     let max_temp = weather.daily.temperature_2m_max.first().unwrap();
     let min_temp = weather.daily.temperature_2m_min.first().unwrap();
@@ -13,7 +13,7 @@ pub fn CountryData(weather: WeatherResponse, country: WeatherLocation) -> Elemen
     rsx! {
         div { class: "flex mb-4 justify-between items-center",
             div {
-                h5 { class: "mb-0 font-medium text-xl", "{country.name} 🏞️" }
+                h5 { class: "mb-0 font-medium text-xl", "{country.read().name} 🏞️" }
                 h6 { class: "mb-0", "{today}" }
             }
             div {

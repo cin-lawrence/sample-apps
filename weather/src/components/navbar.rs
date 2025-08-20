@@ -11,10 +11,10 @@ pub fn Navbar() -> Element {
                 to: Route::Home {},
                 "Home"
             }
-            Link {
-                to: Route::Blog { id: 1 },
-                "Blog"
-            }
+            // Link {
+            //     to: Route::Blog { id: 1 },
+            //     "Blog"
+            // }
         }
 
         Outlet::<Route> {}

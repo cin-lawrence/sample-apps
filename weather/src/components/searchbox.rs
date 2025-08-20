@@ -1,6 +1,8 @@
 use dioxus::prelude::*;
+use tracing;
 
 use crate::models::weather::{SearchResponse, WeatherLocation, WeatherLocations};
+use crate::components::mapicon::MapIcon;
 
 async fn get_locations(input: &str) -> reqwest::Result<WeatherLocations> {
     let res = reqwest::get(&format!(
@@ -10,27 +12,23 @@ async fn get_locations(input: &str) -> reqwest::Result<WeatherLocations> {
     .json::<SearchResponse>()
     .await?;
 
+    tracing::info!("location response: {:?}", res.results);
+
     Ok(res.results)
 }
 
 #[allow(non_snake_case)]
 #[component]
-pub fn SearchBox(country: WeatherLocation) -> Element {
-    let input = use_signal(String::new);
+pub fn SearchBox(mut country: Signal<WeatherLocation>) -> Element {
+    let mut input = use_signal(String::new);
 
-    let locations = use_resource(move || {
-        let query = input.read().clone();
-        async move {
-            if query.trim().is_empty() {
-                return Ok(WeatherLocations::default());
-            }
-            get_locations(&query).await
-        }
-    });
-
-    let oninput = |event: FormEvent| {
-        input.set(event.value().clone());
-    };
+    // let response = use_resource(move || {
+    //     let query = input.read().clone();
+    //     async move {
+    //         get_locations(&query).await
+    //     }
+    // })
+    // .suspend()?;
 
     rsx! {
         div {
@@ -41,7 +39,10 @@ pub fn SearchBox(country: WeatherLocation) -> Element {
                         placeholder: "Country name",
                         "type": "text",
                         autofocus: true,
-                        oninput: oninput
+                        value: "{input}",
+                        oninput: move |event| {
+                            input.set(event.value());
+                        }
                     }
                     svg {
                         class: "w-4 h-4 absolute left-2.5 top-3.5",
@@ -57,30 +58,23 @@ pub fn SearchBox(country: WeatherLocation) -> Element {
                         }
                     }
                 }
-                ul { class: "bg-white border border-gray-100 w-full mt-2 max-h-72 overflow-auto",
-                    match locations.value().read().as_ref() {
-                        Some(Ok(locations)) => rsx! {
-                            {locations.iter().map(|location| {
-                                let location = location.clone();
-                                let onclick = move |_| {
-                                    country.set(location.clone());
-                                };
-                                rsx! {
-                                    li { key: "{location.id}", class: "pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900",
-                                        onclick: onclick,
-                                        MapIcon {}
-                                        b { "{location.name}" }
-                                        " · {location.country}"
-                                    }
-                                }
-                            })}
-                        },
-                        Some(Err(_err)) => rsx! {
-                            li { class: "pl-8 pr-2 py-1 text-red-600", "Failed to fetch locations" }
-                        },
-                        None => rsx! {}
-                    }
-                }
+                //ul { class: "bg-white border border-gray-100 w-full mt-2 max-h-72 overflow-auto",
+                //    if let Ok(locations) = &*response.read() {
+                //        for location in locations.iter().cloned() {
+                //            li { class: "pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900",
+                //                //onclick: move |_| {
+                //                //    println!("on click: {:?}", location);
+                //                //    country.set(location.clone());
+                //                //},
+                //                MapIcon {}
+                //                b {
+                //                    "{location.name}"
+                //                }
+                //                " · {location.country}"
+                //            }
+                //        }
+                //    }
+                //}
             }
         }
     }
