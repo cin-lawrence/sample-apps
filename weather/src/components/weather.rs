@@ -16,10 +16,9 @@ pub fn Weather() -> Element {
         id: 2950159,
     });
 
-    let response = use_resource(move || async move {
-            WeatherService::get_weather(&country()).await
-    })
-    .suspend()?;
+    let response =
+        use_resource(move || async move { WeatherService::get_weather(&country()).await })
+            .suspend()?;
 
     rsx! {
         link {

@@ -2,10 +2,10 @@ use dioxus::prelude::*;
 
 use std::collections::HashMap;
 
-use crate::models::todo::{FilterStatus, TodoItem};
+use crate::components::entry::Entry;
 use crate::components::footer::Footer;
 use crate::components::header::Header;
-use crate::components::entry::Entry;
+use crate::models::todo::{FilterStatus, TodoItem};
 
 #[allow(non_snake_case)]
 pub fn Todo() -> Element {
