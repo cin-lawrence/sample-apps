@@ -1,0 +1,45 @@
+[package]
+name = "fs-auth"
+version = "0.1.0"
+authors = ["Lawrence Feng <spnether1411@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.99"
+async-trait = { version = "0.1.89", optional = true }
+axum = { version = "0.7.9", optional = true }
+axum_session = { version = "0.14.0", optional = true }
+axum_session_auth = { version = "0.14", optional = true }
+axum_session_sqlx = { version = "0.3", features = ["sqlite", "tls-rustls"], optional = true }
+dioxus = { version = "0.6.0", features = ["router", "fullstack"] }
+execute = "0.2.13"
+http = { version = "1.3.1", optional = true }
+serde = "1.0.219"
+sqlx = { version = "0.8", features = ["macros", "migrate", "postgres", "sqlite", "_unstable-all-types", "tls-native-tls", "runtime-tokio"], optional = true }
+tokio = { version = "1.47.1", features = ["full"], optional = true }
+tracing = "0.1.41"
+
+[features]
+default = []
+# The feature that are only required for the web = ["dioxus/web"] build target should be optional and only enabled in the web = ["dioxus/web"] feature
+web = ["dioxus/web"]
+# The feature that are only required for the desktop = ["dioxus/desktop"] build target should be optional and only enabled in the desktop = ["dioxus/desktop"] feature
+desktop = ["dioxus/desktop"]
+# The feature that are only required for the mobile = ["dioxus/mobile"] build target should be optional and only enabled in the mobile = ["dioxus/mobile"] feature
+mobile = ["dioxus/mobile"]
+server = ["dioxus/server", "tokio", "sqlx", "http", "axum", "async-trait", "axum_session", "axum_session_sqlx", "axum_session_auth"]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
+
+[build]
+features = ["server", "web"]
