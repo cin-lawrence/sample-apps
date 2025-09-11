@@ -27,10 +27,10 @@ impl DogAPI {
 
     pub async fn random_image_by_breed(breed: &str) -> reqwest::Result<RandomImageByBreed> {
         reqwest::Client::new()
-        .get(format!("https://dog.ceo/api/breed/{breed}/images/random"))
-        .send()
-        .await?
-        .json::<RandomImageByBreed>()
-        .await
+            .get(format!("https://dog.ceo/api/breed/{breed}/images/random"))
+            .send()
+            .await?
+            .json::<RandomImageByBreed>()
+            .await
     }
 }

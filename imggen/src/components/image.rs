@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
 
-use crate::models::image::ImageResponse;
 use crate::components::input::Input;
 use crate::components::view::View;
+use crate::models::image::ImageResponse;
 
 #[allow(non_snake_case)]
 pub fn Image() -> Element {

@@ -22,44 +22,38 @@ fn main() {
         use axum_session::{SessionConfig, SessionLayer, SessionStore};
         use axum_session_auth::{AuthConfig, AuthSessionLayer};
         use axum_session_sqlx::SessionSqlitePool;
-        use fs_auth::repos::database::connect_to_database;
         use fs_auth::models::User;
+        use fs_auth::repos::database::connect_to_database;
         use sqlx::SqlitePool;
         use tokio::runtime::Runtime;
 
-        Runtime::new()
-            .unwrap()
-            .block_on(async move {
-                let pool = connect_to_database().await;
+        Runtime::new().unwrap().block_on(async move {
+            let pool = connect_to_database().await;
 
-                let session_config = SessionConfig::default().with_table_name("test_table");
-                let auth_config = AuthConfig::<i64>::default().with_anonymous_user_id(Some(1));
-                let session_store = SessionStore::<SessionSqlitePool>::new(
-                    Some(pool.clone().into()),
-                    session_config,
+            let session_config = SessionConfig::default().with_table_name("test_table");
+            let auth_config = AuthConfig::<i64>::default().with_anonymous_user_id(Some(1));
+            let session_store =
+                SessionStore::<SessionSqlitePool>::new(Some(pool.clone().into()), session_config)
+                    .await
+                    .unwrap();
+
+            User::create_user_tables(&pool).await;
+
+            let app = axum::Router::new()
+                .serve_dioxus_application(ServeConfig::new().unwrap(), App)
+                .layer(
+                    AuthSessionLayer::<User, i64, SessionSqlitePool, SqlitePool>::new(Some(pool))
+                        .with_config(auth_config),
                 )
-                    .await
-                    .unwrap();
+                .layer(SessionLayer::new(session_store));
 
-                User::create_user_tables(&pool).await;
+            let addr = dioxus::cli_config::fullstack_address_or_localhost();
+            let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
 
-                let app = axum::Router::new()
-                    .serve_dioxus_application(ServeConfig::new().unwrap(), App)
-                    .layer(
-                        AuthSessionLayer::<User, i64, SessionSqlitePool, SqlitePool>::new(Some(pool))
-                            .with_config(auth_config),
-                    )
-                    .layer(
-                        SessionLayer::new(session_store),
-                    );
-
-                let addr = dioxus::cli_config::fullstack_address_or_localhost();
-                let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
-
-                axum::serve(listener, app.into_make_service())
-                    .await
-                    .unwrap();
-            });
+            axum::serve(listener, app.into_make_service())
+                .await
+                .unwrap();
+        });
     }
 }
 

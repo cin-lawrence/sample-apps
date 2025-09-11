@@ -1,20 +1,17 @@
 use dioxus::prelude::*;
 
+use crate::components::mapicon::MapIcon;
 use crate::models::weather::WeatherLocation;
 use crate::services::weather::WeatherService;
-use crate::components::mapicon::MapIcon;
 
 #[allow(non_snake_case)]
 #[component]
 pub fn SearchBox(mut country: Signal<WeatherLocation>) -> Element {
     let mut input = use_signal(String::new);
 
-    let response = use_resource(move || {
-        async move {
-            WeatherService::get_locations(&input()).await
-        }
-    })
-    .suspend()?;
+    let response =
+        use_resource(move || async move { WeatherService::get_locations(&input()).await })
+            .suspend()?;
 
     rsx! {
         div {

@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
-use crate::components::{blog::Blog,home::Home};
 use crate::components::navbar::Navbar;
+use crate::components::{blog::Blog, home::Home};
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]

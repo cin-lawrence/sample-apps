@@ -1,17 +1,17 @@
-use async_trait::async_trait;
 use crate::models::User;
+use async_trait::async_trait;
 use axum::extract::FromRequestParts;
 use axum::response::{IntoResponse, Response};
 use axum_session_auth::AuthSession;
 use axum_session_sqlx::SessionSqlitePool;
-use http::status::StatusCode;
 use http::request::Parts;
+use http::status::StatusCode;
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions};
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 use std::marker::{Send, Sync};
-use std::str::FromStr;
 use std::ops::{Deref, DerefMut};
+use std::str::FromStr;
 
 pub async fn connect_to_database() -> SqlitePool {
     let connect_opts = SqliteConnectOptions::from_str("sqlite::memory:").unwrap();
@@ -23,14 +23,7 @@ pub async fn connect_to_database() -> SqlitePool {
         .unwrap()
 }
 
-pub struct Session(
-    pub AuthSession<
-        User,
-        i64,
-        SessionSqlitePool,
-        SqlitePool,
-    >,
-);
+pub struct Session(pub AuthSession<User, i64, SessionSqlitePool, SqlitePool>);
 
 impl Deref for Session {
     type Target = AuthSession<User, i64, SessionSqlitePool, SqlitePool>;
@@ -50,19 +43,11 @@ impl DerefMut for Session {
 impl<S: Sync + Send> FromRequestParts<S> for Session {
     type Rejection = AuthSessionLayerNotFound;
 
-    async fn from_request_parts(
-        parts: &mut Parts,
-        state: &S,
-    ) -> Result<Self, Self::Rejection> {
-        AuthSession::<
-            User,
-            i64,
-            SessionSqlitePool,
-            SqlitePool,
-        >::from_request_parts(parts, state)
-        .await
-        .map(Session)
-        .map_err(|_| AuthSessionLayerNotFound)
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        AuthSession::<User, i64, SessionSqlitePool, SqlitePool>::from_request_parts(parts, state)
+            .await
+            .map(Session)
+            .map_err(|_| AuthSessionLayerNotFound)
     }
 }
 

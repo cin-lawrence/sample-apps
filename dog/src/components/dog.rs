@@ -8,11 +8,8 @@ pub fn Dog() -> Element {
     let mut selected_breed = use_signal(String::new);
     let mut search_input = use_signal(String::new);
 
-    let response = use_resource(move || async move {
-        DogAPI::list_all_breeds().await
-    })
-    .suspend()?;
-
+    let response =
+        use_resource(move || async move { DogAPI::list_all_breeds().await }).suspend()?;
 
     rsx! {
         div {

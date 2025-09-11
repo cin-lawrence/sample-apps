@@ -32,20 +32,18 @@ impl Files {
 
         let paths = match fs::read_dir(&cur_path) {
             Ok(e) => e,
-            Err(err) => {
-                match fs::read_to_string(cur_path) {
-                    Ok(_) => {
-                        tracing::info!("Opened file");
-                        return;
-                    },
-                    Err(_) => {
-                        let err = format!("An error occurred: {:?}", err);
-                        self.err = Some(err);
-                        self.path_stack.pop();
-                        return;
-                    }
+            Err(err) => match fs::read_to_string(cur_path) {
+                Ok(_) => {
+                    tracing::info!("Opened file");
+                    return;
                 }
-            }
+                Err(_) => {
+                    let err = format!("An error occurred: {:?}", err);
+                    self.err = Some(err);
+                    self.path_stack.pop();
+                    return;
+                }
+            },
         };
 
         let collected = paths.collect::<Vec<_>>();

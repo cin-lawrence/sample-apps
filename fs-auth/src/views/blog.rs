@@ -1,9 +1,9 @@
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::repos::database::Session;
-#[cfg(feature = "server")]
 use crate::models::User;
+#[cfg(feature = "server")]
+use crate::repos::database::Session;
 
 /// The Blog page component that will be rendered when the current route is `[Route::Blog]`
 ///
@@ -88,7 +88,6 @@ pub async fn get_permissions() -> Result<String, ServerFnError> {
 
     Ok(format!(
         "User {:?} has Permissions needed. Here are the Users permissions: {:?}",
-        current_user.username,
-        current_user.permissions
+        current_user.username, current_user.permissions
     ))
 }

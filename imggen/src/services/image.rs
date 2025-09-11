@@ -1,5 +1,5 @@
-use serde::Serialize;
 use crate::models::image::ImageResponse;
+use serde::Serialize;
 
 pub struct ImageService {}
 
@@ -11,7 +11,11 @@ pub struct ImageRequest {
 }
 
 impl ImageService {
-    pub async fn randomize_image(api_token: String, prompt: String, num_image: String) -> reqwest::Result<ImageResponse> {
+    pub async fn randomize_image(
+        api_token: String,
+        prompt: String,
+        num_image: String,
+    ) -> reqwest::Result<ImageResponse> {
         let body = ImageRequest {
             prompt,
             n: num_image.parse::<i32>().unwrap_or(1),

@@ -5,7 +5,7 @@ use dioxus::prelude::*;
 pub struct CardProps {
     title: String,
     list: Vec<String>,
-    onclick: EventHandler<>,
+    onclick: EventHandler,
 }
 
 pub fn Card(props: CardProps) -> Element {

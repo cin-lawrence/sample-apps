@@ -10,7 +10,6 @@ pub struct SqlPermissionTokens {
     pub token: String,
 }
 
-
 #[derive(sqlx::FromRow, Clone)]
 pub struct SqlUser {
     pub id: i32,
@@ -38,7 +37,7 @@ impl SqlUser {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
-    pub id : i32,
+    pub id: i32,
     pub anonymous: bool,
     pub username: String,
     pub permissions: HashSet<String>,
@@ -55,10 +54,10 @@ impl User {
         let sql_user_perms = sqlx::query_as::<_, SqlPermissionTokens>(
             "SELECT token FROM user_permissions WHERE user_id = $1;",
         )
-            .bind(id)
-            .fetch_all(pool)
-            .await
-            .ok()?;
+        .bind(id)
+        .fetch_all(pool)
+        .await
+        .ok()?;
 
         Some(sqluser.into_user(Some(sql_user_perms)))
     }

@@ -9,7 +9,6 @@ pub struct CountryDataProps {
     country: WeatherLocation,
 }
 
-
 #[allow(non_snake_case)]
 pub fn CountryData(props: CountryDataProps) -> Element {
     let today = Utc::now().format("%y/%m/%d");
