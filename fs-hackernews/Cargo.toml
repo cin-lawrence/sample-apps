@@ -1,0 +1,37 @@
+[package]
+name = "fs-hackernews"
+version = "0.1.0"
+authors = ["Lawrence Feng <spnether1411@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = { version = "0.8.4", optional = true }
+chrono = { version = "0.4.42", features = ["serde"] }
+dioxus = { version = "0.6.0", features = ["router", "fullstack"] }
+reqwest = { version = "0.12.23", features = ["json"] }
+serde = "1.0.225"
+tracing = "0.1.41"
+
+[features]
+default = ["web"]
+# The feature that are only required for the web = ["dioxus/web"] build target should be optional and only enabled in the web = ["dioxus/web"] feature
+web = ["dioxus/web"]
+# The feature that are only required for the desktop = ["dioxus/desktop"] build target should be optional and only enabled in the desktop = ["dioxus/desktop"] feature
+desktop = ["dioxus/desktop"]
+# The feature that are only required for the mobile = ["dioxus/mobile"] build target should be optional and only enabled in the mobile = ["dioxus/mobile"] feature
+mobile = ["dioxus/mobile"]
+server = ["dioxus/server", "dep:axum"]
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
