@@ -1,3 +1,6 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, PartialEq, Clone, Debug, Default)]
 pub struct Rating {
     rate: f32,
     count: u32,

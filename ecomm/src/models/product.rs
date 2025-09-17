@@ -1,11 +1,13 @@
 use super::Rating;
+use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize, PartialEq, Clone, Debug, Default)]
 pub struct Product {
-    id: u32,
-    title: String,
-    price: f32,
-    description: String,
-    category: String,
-    image: String,
-    rating: Rating,
+    pub id: u32,
+    pub title: String,
+    pub price: f32,
+    pub description: String,
+    pub category: String,
+    pub image: String,
+    pub rating: Rating,
 }
