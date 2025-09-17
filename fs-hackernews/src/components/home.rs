@@ -5,8 +5,15 @@ use crate::components::{Preview, Stories};
 
 const HACKERNEWS_CSS: Asset = asset!("/assets/favicon.ico");
 
-#[component]
-pub fn HomePage(story: ReadOnlySignal<PreviewState>) -> Element {
+#[derive(PartialEq, Clone, Props)]
+pub struct HomePageProps {
+    story: ReadOnlySignal<PreviewState>,
+}
+
+#[allow(non_snake_case)]
+pub fn HomePage(props: HomePageProps) -> Element {
+    let story = props.story;
+
     rsx! {
         document::Link {
             rel: "stylesheet",

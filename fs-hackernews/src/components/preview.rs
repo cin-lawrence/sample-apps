@@ -6,7 +6,7 @@ use crate::services::HackerNews;
 
 #[derive(PartialEq, Clone, Props)]
 pub struct PreviewProps {
-    pub story: ReadOnlySignal<PreviewState>,
+    story: ReadOnlySignal<PreviewState>,
 }
 
 #[allow(non_snake_case)]

@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 use crate::components::{ChildrenOrLoading, StoryListing};
 use crate::services::HackerNews;
 
-#[component]
+#[allow(non_snake_case)]
 pub fn Stories() -> Element {
     let stories: Resource<dioxus::Result<Vec<i64>>> = use_server_future(
         move || async move {

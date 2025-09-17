@@ -4,11 +4,16 @@ use crate::models::{Page, PreviewState, StoryItem};
 use crate::services::HackerNews;
 use crate::Route;
 
-#[component]
-pub fn StoryListing(story: ReadOnlySignal<i64>) -> Element {
+#[derive(PartialEq, Clone, Props)]
+pub struct StoryListingProps {
+    story: ReadOnlySignal<i64>,
+}
+
+#[allow(non_snake_case)]
+pub fn StoryListing(props: StoryListingProps) -> Element {
     let story: Resource<dioxus::Result<Page>> = use_server_future(
         move || async move {
-            Ok(HackerNews::get_page(story()).await?)
+            Ok(HackerNews::get_page((props.story)()).await?)
         }
     )?;
 
