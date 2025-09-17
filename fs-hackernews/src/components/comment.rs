@@ -4,12 +4,17 @@ use crate::models::Comment as CommentData;
 use crate::components::ChildrenOrLoading;
 use crate::services::HackerNews;
 
-#[component]
-pub fn Comment(comment: i64) -> Element {
+#[derive(PartialEq, Clone, Props)]
+pub struct CommentProps {
+    comment: i64,
+}
+
+#[allow(non_snake_case)]
+pub fn Comment(props: CommentProps) -> Element {
     let comment: Resource<dioxus::Result<CommentData>> = use_server_future(
         use_reactive!(
-            |comment| async move {
-                let comment = HackerNews::get_comment(comment).await?;
+            |props| async move {
+                let comment = HackerNews::get_comment(props.comment).await?;
                 Ok(comment)
             }
         )
