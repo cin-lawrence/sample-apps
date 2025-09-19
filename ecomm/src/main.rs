@@ -3,6 +3,7 @@
 use dioxus::prelude::*;
 
 use views::{Details, Home};
+use components::ChildrenOrLoading;
 
 mod components;
 mod enums;
@@ -56,6 +57,8 @@ fn App() -> Element {
 
         // The router component renders the route enum we defined above. It will handle synchronization of the URL and render
         // the layouts and components for the active route.
-        Router::<Route> {}
+        ChildrenOrLoading {
+            Router::<Route> {}
+        }
     }
 }

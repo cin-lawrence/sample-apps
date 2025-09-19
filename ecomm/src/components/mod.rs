@@ -27,3 +27,6 @@ pub use icon::{
 
 mod nav;
 pub use nav::Nav;
+
+mod error;
+pub use error::ErrorPage;

@@ -172,7 +172,7 @@ pub fn ProductPage(props: ProductPageProps) -> Element {
                         li { class: "w-1/2 md:w-auto",
                             a { class: "inline-block py-6 px-10 text-gray-500 font-bold font-heading",
                                 href: "#",
-                                "Shipping &amp; returns"
+                                "Shipping & returns"
                             }
                         }
                         li { class: "w-1/2 md:w-auto",
