@@ -1,7 +1,7 @@
 use axum_core::response::IntoResponse;
 use dioxus::prelude::*;
-use dioxus_fullstack::FromResponse;
 use dioxus_fullstack::http::StatusCode;
+use dioxus_fullstack::FromResponse;
 use serde::{Deserialize, Serialize};
 
 fn main() {
@@ -67,10 +67,10 @@ async fn echo(body: String) -> Result<String> {
 #[post("/api/{user_id}/chat?room_id", headers: dioxus_fullstack::HeaderMap)]
 async fn chat(user_id: u32, room_id: Option<u32>) -> Result<String> {
     Ok(format!(
-            "user ID: {}, Room ID: {} - Headers: {:#?}",
-            user_id,
-            room_id.map_or("None".to_string(), |id| id.to_string()),
-            headers,
+        "user ID: {}, Room ID: {} - Headers: {:#?}",
+        user_id,
+        room_id.map_or("None".to_string(), |id| id.to_string()),
+        headers,
     ))
 }
 
@@ -122,8 +122,7 @@ async fn get_custom_response() -> Result<axum_core::response::Response> {
         .status(StatusCode::CREATED)
         .body("Created!".to_string())
         .unwrap()
-        .into_response()
-    )
+        .into_response())
 }
 
 #[server]
