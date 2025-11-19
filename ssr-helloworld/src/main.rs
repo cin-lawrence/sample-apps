@@ -50,8 +50,7 @@ fn App() -> Element {
 #[post("/api/greeting/{name}/{age}")]
 async fn get_greeting(name: String, age: i32) -> Result<String> {
     Ok(format!(
-            "Hello from the server, {}! You are {} years old.",
-            name,
-            age,
+        "Hello from the server, {}! You are {} years old.",
+        name, age,
     ))
 }
