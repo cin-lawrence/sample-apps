@@ -1,0 +1,20 @@
+[package]
+name = "ssr-functions"
+version = "0.1.0"
+authors = ["Lawrence Feng <spnether1411@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum-core = "0.5.5"
+dioxus = { version = "0.7.1", features = ["fullstack"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+
+[features]
+default = ["web"]
+web = ["dioxus/web"]
+desktop = ["dioxus/desktop"]
+mobile = ["dioxus/mobile"]
+server = ["dioxus/server"]
