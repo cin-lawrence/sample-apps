@@ -22,6 +22,8 @@ impl Sqlite {
 
     pub fn create_table(&self) {
         let conn = self.conn.lock().unwrap();
+        // Drop the table if it exists to handle schema changes
+        let _ = conn.execute("DROP TABLE IF EXISTS users", []);
         conn.execute(
             "CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
@@ -29,7 +31,7 @@ impl Sqlite {
                 last_name TEXT NOT NULL,
                 email TEXT NOT NULL,
                 password TEXT,
-                provider TEXT NOT NULL,
+                provider TEXT NOT NULL
             )",
             [],
         )

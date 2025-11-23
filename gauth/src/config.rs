@@ -32,8 +32,10 @@ impl Config {
         dotenv().ok();
 
         Self {
-            client_id: env::var("CLIENT_ID").unwrap().to_string(),
-            client_secret: env::var("CLIENT_SECRET").unwrap().to_string(),
+            client_id: env::var("CLIENT_ID")
+                .expect("CLIENT_ID environment variable is required. Please create a .env file with CLIENT_ID=your_google_client_id"),
+            client_secret: env::var("CLIENT_SECRET")
+                .expect("CLIENT_SECRET environment variable is required. Please create a .env file with CLIENT_SECRET=your_google_client_secret"),
         }
     }
 }
