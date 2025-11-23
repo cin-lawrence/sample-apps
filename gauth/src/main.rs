@@ -34,7 +34,7 @@ async fn main() {
     sqlite.create_table();
 
     let config = Config::new();
-    let google_auth = GoogleAuth::new(sqlite, config.client_id, config.client_secret);
+    let google_auth = GoogleAuth::new(sqlite, config.client_id, config.client_secret, config.redirect_uri);
 
     let address = dioxus::cli_config::fullstack_address_or_localhost();
     let router = axum::Router::new()
@@ -54,13 +54,12 @@ fn main() {
 
 #[component]
 fn App() -> Element {
+    use crate::views::Home;
     rsx! {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS }
         document::Link { rel: "stylesheet", href: TAILWIND_CSS }
 
-        div {
-            "Home"
-        }
+        Home {}
     }
 }

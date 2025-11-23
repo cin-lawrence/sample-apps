@@ -10,4 +10,4 @@
 **/.env
 
 # SQLite DB
-users.db
+**/users.db
