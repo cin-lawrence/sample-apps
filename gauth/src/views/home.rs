@@ -80,7 +80,7 @@ pub fn Home() -> Element {
     let mut email = use_signal(String::new);
     let password = use_signal(String::new);
 
-    if toggle_form() == false {
+    if !toggle_form() {
         button_text.set(String::from("Create Account"));
     } else {
         button_text.set(String::from("Sign In"));
@@ -88,7 +88,7 @@ pub fn Home() -> Element {
 
     rsx! {
         div { class: "login-container",
-            if toggle_form() == false {
+            if !toggle_form() {
                 div {
                     h1 { "Create an account" },
                     div { class: "row sub-text-container",
@@ -120,7 +120,7 @@ pub fn Home() -> Element {
                 "{response_msg}"
             }
 
-            if toggle_form() == false {
+            if !toggle_form() {
                 div { class: "row col2",
                     div {
                         input {
@@ -157,7 +157,7 @@ pub fn Home() -> Element {
                 button {
                     class: "btn-primary",
                     onclick: move |_| async move {
-                        if toggle_form() == false {
+                        if !toggle_form() {
                             let response_text = register(
                                 first_name(),
                                 last_name(),

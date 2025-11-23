@@ -10,6 +10,12 @@ pub struct UIConfig {
     pub redirect_url: String,
 }
 
+impl Default for UIConfig {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl UIConfig {
     pub fn new() -> Self {
         dotenv().ok();
