@@ -67,31 +67,28 @@ impl Sqlite {
     }
 
     pub fn upsert_user(&self, user: User) {
-        let conn = self.conn.lock().unwrap();
-        let row = conn.query_row(
-            "SELECT id, first_name, last_name FROM users WHERE email = ?1 AND provider = 'google'",
-            &[&user.email],
-            |row| {
-                Ok((
-                    row.get::<usize, usize>(0).unwrap(),
-                    row.get::<usize, String>(1).unwrap(),
-                    row.get::<usize, String>(2).unwrap(),
-                ))
-            },
-        );
+        let exists = {
+            let conn = self.conn.lock().unwrap();
+            conn.query_row(
+                "SELECT id, first_name, last_name FROM users WHERE email = ?1 AND provider = 'google'",
+                &[&user.email],
+                |row| {
+                    Ok((
+                        row.get::<usize, usize>(0).unwrap(),
+                        row.get::<usize, String>(1).unwrap(),
+                        row.get::<usize, String>(2).unwrap(),
+                    ))
+                },
+            )
+        };
 
-        match row {
+        match exists {
             Ok(_user) => {
                 println!("Login successful");
             }
             Err(ref _e) => {
-                // Create user directly here to avoid deadlock
-                let mut stmt = conn
-                    .prepare("INSERT INTO users (first_name, last_name, email, provider) VALUES (?, ?, ?, ?)")
-                    .unwrap();
-
-                stmt.execute(&[&user.given_name, &user.family_name, &user.email, "google"])
-                    .unwrap();
+                // Lock is dropped, safe to call create_google_user
+                self.create_google_user(user);
             }
         }
     }
