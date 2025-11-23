@@ -60,15 +60,21 @@ async fn get_users() -> Result<Vec<String>> {
 type BroadcastExtension = axum::Extension<tokio::sync::broadcast::Sender<String>>;
 
 #[post("/api/broadcast", ext: BroadcastExtension)]
-async fn broadcast_message() -> Result<()> {
+async fn broadcast_message() -> Result<usize> {
     let rt = Rc::new("asdasd".to_string());
-    // send() returns an error if there are no receivers, which is fine for broadcast channels
-    // We ignore the error if there are no receivers listening
-    let _ = ext.send("New broadcast message".to_string());
-    tokio::time::sleep(std::time::Duration::from_millis(100)).await;
-    println!("rt: {}", rt);
-
-    Ok(())
+    // send() returns Ok(count) if receivers are present, or Err(SendError) if no receivers
+    match ext.send("New broadcast message".to_string()) {
+        Ok(receiver_count) => {
+            tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            println!("rt: {}, receivers: {}", rt, receiver_count);
+            Ok(receiver_count)
+        }
+        Err(_) => {
+            tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            println!("rt: {}, no receivers", rt);
+            Err(ServerFnError::new("No receivers listening to broadcast channel").into())
+        }
+    }
 }
 
 #[derive(Clone)]
