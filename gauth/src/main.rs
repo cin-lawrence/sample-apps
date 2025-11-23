@@ -1,10 +1,10 @@
 use dioxus::prelude::*;
 
 mod config;
-mod views;
 mod db;
 mod google;
 mod models;
+mod views;
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -18,15 +18,16 @@ async fn google_auth_handler(
     crate::google::GoogleAuth::authenticate(
         axum::extract::State(google_auth),
         axum::extract::Query(params),
-    ).await
+    )
+    .await
 }
 
 #[cfg(feature = "server")]
 #[tokio::main]
 async fn main() {
+    use crate::config::Config;
     use crate::db::Sqlite;
     use crate::google::GoogleAuth;
-    use crate::config::Config;
     use dioxus::server::ServeConfig;
 
     let sqlite = Sqlite::new();

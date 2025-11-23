@@ -1,5 +1,5 @@
-use dioxus::prelude::*;
 use crate::config::UIConfig;
+use dioxus::prelude::*;
 
 #[server]
 async fn register(
@@ -13,47 +13,36 @@ async fn register(
     let sqlite = Sqlite::new();
     let maybe_email = sqlite.check_user_email(&email);
     let message = match maybe_email {
-        Some(_email) => {
-            "A user with this email already exists."
-        },
+        Some(_email) => "A user with this email already exists.",
         None => {
+            use argon2::password_hash::{rand_core::OsRng, PasswordHasher, SaltString};
             use argon2::Argon2;
-            use argon2::password_hash::{
-                PasswordHasher,
-                SaltString,
-                rand_core::OsRng,
-            };
 
             let argon2 = Argon2::default();
             let salt = SaltString::generate(&mut OsRng);
-            let password_hash = argon2.hash_password(password.as_bytes(), &salt)
+            let password_hash = argon2
+                .hash_password(password.as_bytes(), &salt)
                 .unwrap()
                 .to_string();
 
             sqlite.create_classic_user(first_name, last_name, email, password_hash);
 
             "User created."
-        },
+        }
     };
 
     Ok(message.to_string())
 }
 
 #[server]
-async fn login(
-    email: String,
-    password: String,
-) -> Result<String, ServerFnError> {
+async fn login(email: String, password: String) -> Result<String, ServerFnError> {
     use crate::db::Sqlite;
     let sqlite = Sqlite::new();
     let maybe_user = sqlite.get_classic_user_by_email(&email);
     let message = match maybe_user {
         Some(user) => {
+            use argon2::password_hash::{PasswordHash, PasswordVerifier};
             use argon2::Argon2;
-            use argon2::password_hash::{
-                PasswordHash,
-                PasswordVerifier,
-            };
 
             let argon2 = Argon2::default();
             let hash = PasswordHash::new(&user.3).unwrap();
@@ -64,10 +53,8 @@ async fn login(
             } else {
                 "Invalid password"
             }
-        },
-        None => {
-            "Invalid login details"
-        },
+        }
+        None => "Invalid login details",
     };
 
     Ok(message.to_string())

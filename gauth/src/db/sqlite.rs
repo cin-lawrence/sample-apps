@@ -32,21 +32,20 @@ impl Sqlite {
                 provider TEXT NOT NULL,
             )",
             [],
-        ).unwrap();
+        )
+        .unwrap();
     }
 
     pub fn create_google_user(&self, user: User) {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn
-            .prepare("INSERT INTO users (first_name, last_name, email, provider) VALUES (?, ?, ?, ?)")
+            .prepare(
+                "INSERT INTO users (first_name, last_name, email, provider) VALUES (?, ?, ?, ?)",
+            )
             .unwrap();
 
-        stmt.execute(&[
-            &user.given_name,
-            &user.family_name,
-            &user.email,
-            "google",
-        ]).unwrap();
+        stmt.execute(&[&user.given_name, &user.family_name, &user.email, "google"])
+            .unwrap();
     }
 
     pub fn create_classic_user(
@@ -61,49 +60,44 @@ impl Sqlite {
             .prepare("INSERT INTO users (first_name, last_name, email, password, provider) VALUES (?, ?, ?, ?, ?)")
             .unwrap();
 
-        stmt.execute(&[
-            &first_name,
-            &last_name,
-            &email,
-            &password_hash,
-            "classic",
-        ]).unwrap();
+        stmt.execute(&[&first_name, &last_name, &email, &password_hash, "classic"])
+            .unwrap();
     }
 
     pub fn upsert_user(&self, user: User) {
         let conn = self.conn.lock().unwrap();
-        let row = conn
-            .query_row("SELECT id, first_name, last_name FROM users WHERE email = ?1 AND provider = 'google'", &[&user.email], |row| {
-                Ok(
-                    (
-                        row.get::<usize, usize>(0).unwrap(),
-                        row.get::<usize, String>(1).unwrap(),
-                        row.get::<usize, String>(2).unwrap(),
-                    ),
-                )
-            });
+        let row = conn.query_row(
+            "SELECT id, first_name, last_name FROM users WHERE email = ?1 AND provider = 'google'",
+            &[&user.email],
+            |row| {
+                Ok((
+                    row.get::<usize, usize>(0).unwrap(),
+                    row.get::<usize, String>(1).unwrap(),
+                    row.get::<usize, String>(2).unwrap(),
+                ))
+            },
+        );
 
         match row {
             Ok(_user) => {
                 println!("Login successful");
-            },
+            }
             Err(ref _e) => {
                 // Create user directly here to avoid deadlock
                 let mut stmt = conn
                     .prepare("INSERT INTO users (first_name, last_name, email, provider) VALUES (?, ?, ?, ?)")
                     .unwrap();
 
-                stmt.execute(&[
-                    &user.given_name,
-                    &user.family_name,
-                    &user.email,
-                    "google",
-                ]).unwrap();
+                stmt.execute(&[&user.given_name, &user.family_name, &user.email, "google"])
+                    .unwrap();
             }
         }
     }
 
-    pub fn get_classic_user_by_email(&self, email: &String) -> Option<(usize, String, String, String)> {
+    pub fn get_classic_user_by_email(
+        &self,
+        email: &String,
+    ) -> Option<(usize, String, String, String)> {
         let conn = self.conn.lock().unwrap();
         let row = conn
             .query_row(
@@ -128,14 +122,11 @@ impl Sqlite {
 
     pub fn check_user_email(&self, email: &String) -> Option<String> {
         let conn = self.conn.lock().unwrap();
-        let row = conn
-            .query_row(
-                "SELECT email FROM users WHERE email = ?1 AND provider = 'classic'",
-                &[&email],
-                |row| {
-                    row.get::<usize, String>(0)
-                }
-            );
+        let row = conn.query_row(
+            "SELECT email FROM users WHERE email = ?1 AND provider = 'classic'",
+            &[&email],
+            |row| row.get::<usize, String>(0),
+        );
 
         match row {
             Ok(email) => Some(email),
@@ -143,4 +134,3 @@ impl Sqlite {
         }
     }
 }
-

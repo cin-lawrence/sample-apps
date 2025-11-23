@@ -1,5 +1,5 @@
-use std::env;
 use dotenv::dotenv;
+use std::env;
 
 pub const GOOGLE_REDIRECT_URL: &str = "http://127.0.0.1:8888/google_auth";
 
@@ -14,9 +14,8 @@ impl UIConfig {
 
         Self {
             client_id: env::var("CLIENT_ID").unwrap().to_string(),
-            redirect_url: env::var("GOOGLE_REDIRECT_URL").unwrap_or_else(
-                |_| GOOGLE_REDIRECT_URL.to_string(),
-            ),
+            redirect_url: env::var("GOOGLE_REDIRECT_URL")
+                .unwrap_or_else(|_| GOOGLE_REDIRECT_URL.to_string()),
         }
     }
 }

@@ -1,8 +1,8 @@
 use axum::extract::{Query, State};
 use serde::Deserialize;
 
-use crate::models::User;
 use crate::db::Sqlite;
+use crate::models::User;
 
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -35,7 +35,7 @@ impl GoogleAuth {
         if let Some(code) = params.get("code") {
             let mut form = HashMap::new();
             form.insert("code", code.as_str());
-            form.insert("client_id",  &google_auth.client_id);
+            form.insert("client_id", &google_auth.client_id);
             form.insert("client_secret", &google_auth.client_secret);
             form.insert("grant_type", "authorization_code");
 
@@ -63,4 +63,3 @@ impl GoogleAuth {
         "Process completed"
     }
 }
-
