@@ -1,8 +1,10 @@
 use dotenv::dotenv;
+use serde::{Deserialize, Serialize};
 use std::env;
 
 pub const GOOGLE_REDIRECT_URL: &str = "http://127.0.0.1:8888/google_auth";
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UIConfig {
     pub client_id: String,
     pub redirect_url: String,

@@ -2,6 +2,11 @@ use crate::config::UIConfig;
 use dioxus::prelude::*;
 
 #[server]
+async fn get_ui_config() -> Result<UIConfig, ServerFnError> {
+    Ok(UIConfig::new())
+}
+
+#[server]
 async fn register(
     first_name: String,
     last_name: String,
@@ -65,7 +70,7 @@ const GOOGLE_ICON: Asset = asset!("/assets/google-icon.svg");
 /// The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]
 pub fn Home() -> Element {
-    let config = UIConfig::new();
+    let config = use_resource(|| async move { get_ui_config().await });
     let mut toggle_form = use_signal(|| false);
     let mut button_text = use_signal(String::new);
     let mut response_msg = use_signal(String::new);
@@ -174,13 +179,29 @@ pub fn Home() -> Element {
                 legend { "Or signin with" }
                 div {
                     class: "row",
-                    a {
-                        class: "btn-signin-google",
-                        href : format!("https://accounts.google.com/o/oauth2/v2/auth?client_id={}&redirect_uri={}&response_type=code&scope=email profile", config.client_id, config.redirect_url),
-                        img {
-                            src: GOOGLE_ICON,
+                    match config() {
+                        Some(Ok(config)) => rsx! {
+                            a {
+                                class: "btn-signin-google",
+                                href: format!("https://accounts.google.com/o/oauth2/v2/auth?client_id={}&redirect_uri={}&response_type=code&scope=email profile", config.client_id, config.redirect_url),
+                                img {
+                                    src: GOOGLE_ICON,
+                                },
+                                "Sign in with Google"
+                            }
                         },
-                        "Sign in with Google"
+                        Some(Err(_)) => rsx! {
+                            a {
+                                class: "btn-signin-google",
+                                "Failed to load config"
+                            }
+                        },
+                        None => rsx! {
+                            a {
+                                class: "btn-signin-google",
+                                "Loading..."
+                            }
+                        },
                     }
                 }
             }
